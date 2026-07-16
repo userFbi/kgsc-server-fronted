@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KGSC Admin — Members</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anton&family=Work+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --forest: #1f3d2b;
+            --grass: #4c7a3d;
+            --sun: #e8a33d;
+            --cream: #f7f5ef;
+            --ink: #1a1a16;
+            --line: rgba(31, 61, 43, 0.16);
+            --danger: #b23a2f;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--cream);
+            color: var(--ink);
+            font-family: "Work Sans", sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ── Login screen ── */
+        #loginScreen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .login-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 36px 32px;
+            max-width: 360px;
+            width: 100%;
+            box-shadow: 0 18px 40px -22px rgba(31, 61, 43, 0.35);
+            text-align: center;
+        }
+
+        .login-card h1 {
+            font-family: "Anton", sans-serif;
+            font-weight: 400;
+            font-size: 26px;
+            text-transform: uppercase;
+            color: var(--forest);
+            margin: 0 0 6px;
+        }
+
+        .login-card p {
+            font-size: 13px;
+            color: rgba(26, 26, 22, 0.55);
+            margin: 0 0 22px;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 10px;
+            border: 1.5px solid var(--line);
+            background: var(--cream);
+            font-size: 16px;
+            outline: none;
+            margin-bottom: 14px;
+        }
+
+        .login-card input:focus {
+            border-color: var(--grass);
+            background: #fff;
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: var(--forest);
+            color: var(--cream);
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .login-card button:hover {
+            background: var(--grass);
+        }
+
+        .login-error {
+            color: var(--danger);
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        /* ── Dashboard ── */
+        #dashboard {
+            display: none;
+        }
+
+        #dashboard.show {
+            display: block;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 28px;
+            background: var(--forest);
+            color: var(--cream);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .topbar h1 {
+            font-family: "Anton", sans-serif;
+            font-weight: 400;
+            font-size: 20px;
+            text-transform: uppercase;
+            margin: 0;
+            letter-spacing: 0.02em;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1.5px solid rgba(247, 245, 239, 0.4);
+            color: var(--cream);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(247, 245, 239, 0.12);
+        }
+
+        .content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 28px 20px 60px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-card .num {
+            font-family: "Anton", sans-serif;
+            font-size: 34px;
+            color: var(--forest);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-card .label {
+            font-family: "Space Mono", monospace;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--grass);
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 24px;
+        }
+
+        .panel-title {
+            font-family: "Anton", sans-serif;
+            font-weight: 400;
+            font-size: 17px;
+            text-transform: uppercase;
+            color: var(--forest);
+            margin: 0 0 16px;
+        }
+
+        /* Add member form */
+        .add-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .add-form input {
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1.5px solid var(--line);
+            background: var(--cream);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .add-form input:focus {
+            border-color: var(--grass);
+            background: #fff;
+        }
+
+        .add-btn {
+            grid-column: 1 / -1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--grass);
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .add-btn:hover {
+            background: #3f6631;
+        }
+
+        .add-msg {
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .add-msg.show {
+            display: block;
+        }
+
+        .add-msg.ok {
+            color: var(--grass);
+        }
+
+        .add-msg.err {
+            color: var(--danger);
+        }
+
+        /* Search */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1.5px solid var(--line);
+            background: var(--cream);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--grass);
+            background: #fff;
+        }
+
+        /* Table */
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            text-align: left;
+            font-family: "Space Mono", monospace;
+            font-size: 11px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--grass);
+            padding: 10px 12px;
+            border-bottom: 2px solid var(--line);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--line);
+            vertical-align: top;
+        }
+
+        tr:hover td {
+            background: rgba(76, 122, 61, 0.04);
+        }
+
+        .del-btn {
+            background: transparent;
+            border: 1.5px solid rgba(178, 58, 47, 0.4);
+            color: var(--danger);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .del-btn:hover {
+            background: rgba(178, 58, 47, 0.08);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(26, 26, 22, 0.45);
+            font-size: 14px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: rgba(26, 26, 22, 0.5);
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen">
+        <div class="login-card">
+            <h1>KGSC Admin</h1>
+            <p>Enter the admin password to view members</p>
+            <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password" />
+            <button id="loginBtn">Login</button>
+            <div class="login-error" id="loginError">Incorrect password.</div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard">
+        <div class="topbar">
+            <h1>Kamlaba Garden Sport Club — Admin</h1>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+
+        <div class="content">
+            <div class="stats" id="statsRow">
+                <div class="stat-card">
+                    <div class="num" id="statTotal">–</div>
+                    <div class="label">Total Joined</div>
+                </div>
+                <div class="stat-card">
+                    <div class="num" id="statToday">–</div>
+                    <div class="label">Joined Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="num" id="statWeek">–</div>
+                    <div class="label">Last 7 Days</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2 class="panel-title">Add member manually</h2>
+                <div class="add-form">
+                    <input type="text" id="addName" placeholder="Full name" />
+                    <input type="number" id="addAge" placeholder="Age" />
+                    <input type="text" id="addPhone" placeholder="Phone" />
+                    <input type="text" id="addAddress" placeholder="Address" />
+                    <button class="add-btn" id="addBtn">Add member</button>
+                </div>
+                <div class="add-msg" id="addMsg"></div>
+            </div>
+
+            <div class="panel">
+                <h2 class="panel-title">Members</h2>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search by name or phone…" />
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Phone</th>
+                                <th>Address</th>
+                                <th>Joined</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="membersBody"></tbody>
+                    </table>
+                    <div class="loading" id="loadingState" style="display:none;">Loading…</div>
+                    <div class="empty-state" id="emptyState" style="display:none;">No members yet.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+       const API_BASE = "https://kgsc-server.onrender.com";
+
+        const loginScreen = document.getElementById("loginScreen");
+        const dashboard = document.getElementById("dashboard");
+        const passwordInput = document.getElementById("passwordInput");
+        const loginBtn = document.getElementById("loginBtn");
+        const loginError = document.getElementById("loginError");
+        const logoutBtn = document.getElementById("logoutBtn");
+
+        let allMembers = [];
+
+        // ── Auth ──
+        function getStoredPassword() {
+            return sessionStorage.getItem("kgsc_admin_pw");
+        }
+
+        function setStoredPassword(pw) {
+            sessionStorage.setItem("kgsc_admin_pw", pw);
+        }
+
+        function clearStoredPassword() {
+            sessionStorage.removeItem("kgsc_admin_pw");
+        }
+
+        async function login(password) {
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ password }),
+                });
+                if (!res.ok) throw new Error("Incorrect");
+                setStoredPassword(password);
+                showDashboard();
+            } catch (err) {
+                loginError.classList.add("show");
+            }
+        }
+
+        loginBtn.addEventListener("click", () => {
+            const pw = passwordInput.value.trim();
+            if (!pw) return;
+            loginError.classList.remove("show");
+            login(pw);
+        });
+
+        passwordInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") loginBtn.click();
+        });
+
+        logoutBtn.addEventListener("click", () => {
+            clearStoredPassword();
+            dashboard.classList.remove("show");
+            loginScreen.style.display = "flex";
+            passwordInput.value = "";
+        });
+
+        function showDashboard() {
+            loginScreen.style.display = "none";
+            dashboard.classList.add("show");
+            loadStats();
+            loadMembers();
+        }
+
+        // ── API helper ──
+        async function adminFetch(path, options = {}) {
+            const pw = getStoredPassword();
+            const res = await fetch(`${API_BASE}${path}`, {
+                ...options,
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-admin-password": pw,
+                    ...(options.headers || {}),
+                },
+            });
+            if (res.status === 401) {
+                clearStoredPassword();
+                dashboard.classList.remove("show");
+                loginScreen.style.display = "flex";
+                throw new Error("Session expired");
+            }
+            return res;
+        }
+
+        // ── Stats ──
+        async function loadStats() {
+            try {
+                const res = await adminFetch("/api/admin/stats");
+                const data = await res.json();
+                document.getElementById("statTotal").textContent = data.total ?? "–";
+                document.getElementById("statToday").textContent = data.today ?? "–";
+                document.getElementById("statWeek").textContent = data.thisWeek ?? "–";
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // ── Members list ──
+        async function loadMembers() {
+            const body = document.getElementById("membersBody");
+            const loadingState = document.getElementById("loadingState");
+            const emptyState = document.getElementById("emptyState");
+
+            loadingState.style.display = "block";
+            emptyState.style.display = "none";
+            body.innerHTML = "";
+
+            try {
+                const res = await adminFetch("/api/admin/members");
+                const data = await res.json();
+                allMembers = data.members || [];
+                renderMembers(allMembers);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                loadingState.style.display = "none";
+            }
+        }
+
+        function renderMembers(members) {
+            const body = document.getElementById("membersBody");
+            const emptyState = document.getElementById("emptyState");
+            body.innerHTML = "";
+
+            if (!members.length) {
+                emptyState.style.display = "block";
+                return;
+            }
+            emptyState.style.display = "none";
+
+            members.forEach((m) => {
+                const tr = document.createElement("tr");
+                const joinedDate = new Date(m.joinedAt).toLocaleDateString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                });
+
+                tr.innerHTML = `
+          <td>${escapeHtml(m.name)}</td>
+          <td>${m.age}</td>
+          <td>${escapeHtml(m.phone)}</td>
+          <td>${escapeHtml(m.address)}</td>
+          <td>${joinedDate}</td>
+          <td><button class="del-btn" data-id="${m._id}">Delete</button></td>
+        `;
+                body.appendChild(tr);
+            });
+
+            body.querySelectorAll(".del-btn").forEach((btn) => {
+                btn.addEventListener("click", () => deleteMember(btn.dataset.id));
+            });
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement("div");
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        async function deleteMember(id) {
+            if (!confirm("Remove this member?")) return;
+            try {
+                await adminFetch(`/api/admin/members/${id}`, { method: "DELETE" });
+                loadMembers();
+                loadStats();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // ── Search/filter ──
+        document.getElementById("searchInput").addEventListener("input", (e) => {
+            const q = e.target.value.trim().toLowerCase();
+            if (!q) return renderMembers(allMembers);
+            const filtered = allMembers.filter(
+                (m) =>
+                    m.name.toLowerCase().includes(q) ||
+                    m.phone.toLowerCase().includes(q)
+            );
+            renderMembers(filtered);
+        });
+
+        // ── Add member ──
+        document.getElementById("addBtn").addEventListener("click", async () => {
+            const name = document.getElementById("addName").value.trim();
+            const age = parseInt(document.getElementById("addAge").value, 10);
+            const phone = document.getElementById("addPhone").value.trim();
+            const address = document.getElementById("addAddress").value.trim();
+            const msg = document.getElementById("addMsg");
+
+            if (!name || !phone || !address || isNaN(age)) {
+                msg.textContent = "Please fill in all fields.";
+                msg.className = "add-msg show err";
+                return;
+            }
+
+            try {
+                const res = await adminFetch("/api/admin/members", {
+                    method: "POST",
+                    body: JSON.stringify({ name, age, phone, address }),
+                });
+                if (!res.ok) throw new Error("Failed");
+
+                msg.textContent = "Member added!";
+                msg.className = "add-msg show ok";
+                document.getElementById("addName").value = "";
+                document.getElementById("addAge").value = "";
+                document.getElementById("addPhone").value = "";
+                document.getElementById("addAddress").value = "";
+
+                loadMembers();
+                loadStats();
+            } catch (err) {
+                msg.textContent = "Failed to add member.";
+                msg.className = "add-msg show err";
+            }
+        });
+
+        // ── Auto-login if password already stored this session ──
+        if (getStoredPassword()) {
+            login(getStoredPassword());
+        }
+    </script>
+</body>
+
+</html>
