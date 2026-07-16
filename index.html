@@ -349,6 +349,46 @@
         padding: 24px 20px;
       }
     }
+
+    .confirm strong {
+      color: var(--forest);
+    }
+
+    .wa-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+      padding: 14px 22px;
+      border-radius: 10px;
+      background: #25d366;
+      color: #fff;
+      font-family: "Work Sans", sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      transition: transform 0.12s ease, background 0.15s ease;
+    }
+
+    .wa-btn:hover {
+      background: #1ebd5a;
+    }
+
+    .wa-btn:active {
+      transform: scale(0.98);
+    }
+
+    .wa-btn:focus-visible {
+      outline: 2px solid var(--forest);
+      outline-offset: 2px;
+    }
+
+    .wa-note {
+      font-size: 12.5px;
+      color: rgba(26, 26, 22, 0.5);
+      margin-top: 10px;
+    }
   </style>
 </head>
 
@@ -391,6 +431,10 @@
           You're in, <strong id="confirmName"></strong>.
         </p>
         <p>See you at Kamlaba Garden Sport Club!</p>
+        <a href="#" id="waBtn" class="wa-btn" target="_blank" rel="noopener">
+          💬 Say hi on WhatsApp
+        </a>
+        <p class="wa-note">Tap to get your instant welcome message</p>
       </div>
     </div>
 
@@ -405,6 +449,7 @@
       new Date().getFullYear();
 
     const API_URL = "https://kgsc-server.onrender.com/api/submit";
+    const CLUB_WHATSAPP_NUMBER = "9725720612"; // 👈 replace with your KGSC WhatsApp number (country code + number, no + or spaces)
 
     const form = document.getElementById("inviteForm");
     const nameInput = document.getElementById("nameInput");
@@ -416,6 +461,7 @@
     const confirmBox = document.getElementById("confirmBox");
     const confirmName = document.getElementById("confirmName");
     const cardTitle = document.getElementById("cardTitle");
+    const waBtn = document.getElementById("waBtn");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -450,9 +496,15 @@
         if (!res.ok) throw new Error("Server error");
 
         confirmName.textContent = name;
-        cardTitle.style.display = "none"; // 👈 hides "Enter your details"
+        cardTitle.style.display = "none";
         form.classList.add("hide");
         confirmBox.classList.add("show");
+
+        // 👇 Build the wa.me link with pre-filled greeting
+        const waMessage = encodeURIComponent(
+          `Hi, I just registered for KGSC! My name is ${name}.`
+        );
+        waBtn.href = `https://wa.me/${CLUB_WHATSAPP_NUMBER}?text=${waMessage}`;
       } catch (err) {
         errorMsg.textContent = "Something went wrong. Please try again.";
         errorMsg.classList.add("show");
