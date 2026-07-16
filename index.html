@@ -521,9 +521,13 @@
         form.classList.add("hide");
         confirmBox.classList.add("show");
 
-        // 👇 Build the wa.me link with pre-filled greeting
+        
         const waMessage = encodeURIComponent(
-          `Hi, I just registered for KGSC! My name is ${name}.`
+          `Hi! I just registered for KGSC 🎉\n\n` +
+          `*Name:* ${name}\n` +
+          `*Age:* ${age}\n` +
+          `*Phone:* ${phone}\n` +
+          `*Address:* ${address}`
         );
         waBtn.href = `https://wa.me/${CLUB_WHATSAPP_NUMBER}?text=${waMessage}`;
       } catch (err) {
