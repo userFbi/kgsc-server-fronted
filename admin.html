@@ -35,10 +35,48 @@
             color: var(--ink);
             font-family: "Work Sans", sans-serif;
             min-height: 100vh;
+            position: relative;
+        }
+
+        .field-lines {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image: repeating-linear-gradient(90deg,
+                    transparent, transparent 79px, var(--line) 79px, var(--line) 80px);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
         }
 
         /* ── Login screen ── */
         #loginScreen {
+            position: relative;
+            z-index: 1;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -50,17 +88,34 @@
             background: #fff;
             border: 1px solid var(--line);
             border-radius: 18px;
-            padding: 36px 32px;
+            padding: 40px 32px;
             max-width: 360px;
             width: 100%;
             box-shadow: 0 18px 40px -22px rgba(31, 61, 43, 0.35);
             text-align: center;
+            opacity: 0;
+            animation: rise 0.5s ease forwards;
+        }
+
+        .login-badge {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--forest);
+            color: var(--cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            font-family: "Anton", sans-serif;
+            font-size: 20px;
+            box-shadow: 0 0 0 6px rgba(31, 61, 43, 0.08);
         }
 
         .login-card h1 {
             font-family: "Anton", sans-serif;
             font-weight: 400;
-            font-size: 26px;
+            font-size: 24px;
             text-transform: uppercase;
             color: var(--forest);
             margin: 0 0 6px;
@@ -81,6 +136,8 @@
             font-size: 16px;
             outline: none;
             margin-bottom: 14px;
+            font-family: "Work Sans", sans-serif;
+            transition: border-color 0.15s ease, background 0.15s ease;
         }
 
         .login-card input:focus {
@@ -98,26 +155,57 @@
             font-weight: 700;
             font-size: 15px;
             cursor: pointer;
-            transition: background 0.15s ease;
+            transition: background 0.15s ease, transform 0.1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .login-card button:hover {
             background: var(--grass);
         }
 
+        .login-card button:active {
+            transform: scale(0.98);
+        }
+
+        .login-card button:disabled {
+            opacity: 0.7;
+            cursor: default;
+        }
+
         .login-error {
             color: var(--danger);
             font-size: 13px;
-            margin-top: 10px;
+            margin-top: 12px;
             display: none;
+            opacity: 0;
+            animation: rise 0.3s ease forwards;
         }
 
         .login-error.show {
             display: block;
         }
 
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(247, 245, 239, 0.35);
+            border-top-color: var(--cream);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+
+        .spinner.show {
+            display: inline-block;
+        }
+
         /* ── Dashboard ── */
         #dashboard {
+            position: relative;
+            z-index: 1;
             display: none;
         }
 
@@ -129,72 +217,147 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 20px 28px;
+            padding: 18px 28px;
             background: var(--forest);
             color: var(--cream);
             flex-wrap: wrap;
             gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .topbar-left .icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: rgba(247, 245, 239, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .topbar h1 {
             font-family: "Anton", sans-serif;
             font-weight: 400;
-            font-size: 20px;
+            font-size: 17px;
             text-transform: uppercase;
             margin: 0;
             letter-spacing: 0.02em;
+            line-height: 1.2;
         }
 
-        .logout-btn {
+        .topbar .sub {
+            font-family: "Space Mono", monospace;
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(247, 245, 239, 0.55);
+            margin-top: 2px;
+        }
+
+        .topbar-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-outline {
             background: transparent;
             border: 1.5px solid rgba(247, 245, 239, 0.4);
             color: var(--cream);
             padding: 8px 16px;
             border-radius: 8px;
             font-size: 13px;
+            font-family: "Work Sans", sans-serif;
+            font-weight: 600;
             cursor: pointer;
             transition: background 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .logout-btn:hover {
+        .btn-outline:hover {
             background: rgba(247, 245, 239, 0.12);
         }
 
         .content {
-            max-width: 960px;
+            max-width: 980px;
             margin: 0 auto;
             padding: 28px 20px 60px;
         }
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 14px;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .stat-card {
             background: #fff;
             border: 1px solid var(--line);
             border-radius: 14px;
-            padding: 20px;
+            padding: 20px 16px;
             text-align: center;
+            opacity: 0;
+            animation: rise 0.5s ease forwards;
+        }
+
+        .stat-card:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .stat-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .stat-card:nth-child(3) {
+            animation-delay: 0.15s;
         }
 
         .stat-card .num {
             font-family: "Anton", sans-serif;
-            font-size: 34px;
+            font-size: 32px;
             color: var(--forest);
             line-height: 1;
             margin-bottom: 6px;
+            min-height: 32px;
         }
 
         .stat-card .label {
             font-family: "Space Mono", monospace;
-            font-size: 11px;
-            letter-spacing: 0.08em;
+            font-size: 10.5px;
+            letter-spacing: 0.06em;
             text-transform: uppercase;
             color: var(--grass);
+        }
+
+        .skel {
+            display: inline-block;
+            width: 34px;
+            height: 26px;
+            background: linear-gradient(90deg, var(--line) 25%, rgba(31, 61, 43, 0.06) 50%, var(--line) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.3s infinite;
+            border-radius: 6px;
+            vertical-align: middle;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
         }
 
         .panel {
@@ -202,24 +365,70 @@
             border: 1px solid var(--line);
             border-radius: 16px;
             padding: 22px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: rise 0.5s ease 0.2s forwards;
+        }
+
+        .panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .panel-title {
             font-family: "Anton", sans-serif;
             font-weight: 400;
-            font-size: 17px;
+            font-size: 16px;
             text-transform: uppercase;
             color: var(--forest);
-            margin: 0 0 16px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-title .count {
+            font-family: "Space Mono", monospace;
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: none;
+            color: rgba(26, 26, 22, 0.4);
+        }
+
+        .toggle-add-btn {
+            background: transparent;
+            border: none;
+            color: var(--grass);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: "Work Sans", sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         /* Add member form */
+        .add-form-wrap {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.25s ease;
+        }
+
+        .add-form-wrap.open {
+            max-height: 260px;
+        }
+
         .add-form {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 10px;
             margin-bottom: 10px;
+            padding-top: 4px;
         }
 
         .add-form input {
@@ -229,6 +438,8 @@
             background: var(--cream);
             font-size: 14px;
             outline: none;
+            font-family: "Work Sans", sans-serif;
+            transition: border-color 0.15s ease, background 0.15s ease;
         }
 
         .add-form input:focus {
@@ -246,45 +457,68 @@
             font-weight: 700;
             font-size: 14px;
             cursor: pointer;
+            transition: background 0.15s ease;
         }
 
         .add-btn:hover {
             background: #3f6631;
         }
 
-        .add-msg {
+        .add-btn:disabled {
+            opacity: 0.65;
+            cursor: default;
+        }
+
+        .toast {
             font-size: 13px;
-            margin-top: 8px;
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
             display: none;
+            align-items: center;
+            gap: 8px;
         }
 
-        .add-msg.show {
-            display: block;
+        .toast.show {
+            display: flex;
+            opacity: 0;
+            animation: rise 0.25s ease forwards;
         }
 
-        .add-msg.ok {
+        .toast.ok {
+            background: rgba(76, 122, 61, 0.1);
             color: var(--grass);
         }
 
-        .add-msg.err {
+        .toast.err {
+            background: rgba(178, 58, 47, 0.08);
             color: var(--danger);
         }
 
         /* Search */
         .search-bar {
-            display: flex;
-            gap: 10px;
+            position: relative;
             margin-bottom: 16px;
         }
 
+        .search-bar svg {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(26, 26, 22, 0.35);
+        }
+
         .search-bar input {
-            flex: 1;
-            padding: 12px 14px;
+            width: 100%;
+            padding: 12px 14px 12px 40px;
             border-radius: 8px;
             border: 1.5px solid var(--line);
             background: var(--cream);
             font-size: 14px;
             outline: none;
+            font-family: "Work Sans", sans-serif;
+            transition: border-color 0.15s ease, background 0.15s ease;
         }
 
         .search-bar input:focus {
@@ -292,9 +526,42 @@
             background: #fff;
         }
 
-        /* Table */
+        /* Table (desktop) */
         .table-wrap {
             overflow-x: auto;
+            overflow-y: auto;
+            max-height: 480px;
+        }
+
+        .table-wrap thead th {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 1;
+        }
+
+        .table-wrap::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .table-wrap::-webkit-scrollbar-track {
+            background: var(--cream);
+            border-radius: 8px;
+        }
+
+        .table-wrap::-webkit-scrollbar-thumb {
+            background: var(--line);
+            border-radius: 8px;
+        }
+
+        .table-wrap::-webkit-scrollbar-thumb:hover {
+            background: var(--grass);
+        }
+
+        .table-wrap {
+            scrollbar-width: thin;
+            scrollbar-color: var(--line) var(--cream);
         }
 
         table {
@@ -306,7 +573,7 @@
         th {
             text-align: left;
             font-family: "Space Mono", monospace;
-            font-size: 11px;
+            font-size: 10.5px;
             letter-spacing: 0.06em;
             text-transform: uppercase;
             color: var(--grass);
@@ -316,55 +583,192 @@
         }
 
         td {
-            padding: 12px;
+            padding: 13px 12px;
             border-bottom: 1px solid var(--line);
-            vertical-align: top;
+            vertical-align: middle;
         }
 
         tr:hover td {
             background: rgba(76, 122, 61, 0.04);
         }
 
+        .name-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--forest);
+            color: var(--cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Anton", sans-serif;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .age-pill {
+            display: inline-block;
+            background: rgba(76, 122, 61, 0.1);
+            color: var(--grass);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 9px;
+            border-radius: 999px;
+        }
+
         .del-btn {
             background: transparent;
-            border: 1.5px solid rgba(178, 58, 47, 0.4);
+            border: 1.5px solid rgba(178, 58, 47, 0.35);
             color: var(--danger);
             padding: 6px 12px;
             border-radius: 6px;
             font-size: 12px;
             cursor: pointer;
             white-space: nowrap;
+            transition: background 0.15s ease;
         }
 
         .del-btn:hover {
             background: rgba(178, 58, 47, 0.08);
         }
 
+        /* Mobile cards */
+        .member-cards {
+            display: none;
+        }
+
+        @media (max-width: 680px) {
+            .table-wrap {
+                display: none;
+            }
+
+            .member-cards {
+                display: block;
+                max-height: 480px;
+                overflow-y: auto;
+                padding-right: 4px;
+                scrollbar-width: thin;
+                scrollbar-color: var(--line) var(--cream);
+            }
+
+            .member-cards::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .member-cards::-webkit-scrollbar-track {
+                background: var(--cream);
+                border-radius: 8px;
+            }
+
+            .member-cards::-webkit-scrollbar-thumb {
+                background: var(--line);
+                border-radius: 8px;
+            }
+
+            .member-card {
+                border: 1px solid var(--line);
+                border-radius: 12px;
+                padding: 14px 16px;
+                margin-bottom: 10px;
+            }
+
+            .member-card-top {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 8px;
+            }
+
+            .member-card-row {
+                font-size: 13px;
+                color: rgba(26, 26, 22, 0.65);
+                margin-bottom: 3px;
+            }
+
+            .member-card-row b {
+                color: var(--ink);
+                font-weight: 600;
+            }
+
+            .member-card-foot {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-top: 10px;
+                padding-top: 10px;
+                border-top: 1px solid var(--line);
+            }
+
+            .joined-tag {
+                font-family: "Space Mono", monospace;
+                font-size: 11px;
+                color: rgba(26, 26, 22, 0.4);
+            }
+
+            .stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .stat-card {
+                padding: 14px 8px;
+            }
+
+            .stat-card .num {
+                font-size: 24px;
+            }
+        }
+
         .empty-state {
             text-align: center;
-            padding: 40px 20px;
-            color: rgba(26, 26, 22, 0.45);
+            padding: 44px 20px;
+            color: rgba(26, 26, 22, 0.4);
             font-size: 14px;
         }
 
-        .loading {
-            text-align: center;
-            padding: 30px;
-            color: rgba(26, 26, 22, 0.5);
-            font-size: 14px;
+        .empty-state svg {
+            margin-bottom: 10px;
+            opacity: 0.4;
+        }
+
+        .skeleton-row {
+            display: flex;
+            gap: 12px;
+            padding: 13px 12px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .skeleton-block {
+            height: 14px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--line) 25%, rgba(31, 61, 43, 0.06) 50%, var(--line) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.3s infinite;
         }
     </style>
 </head>
 
 <body>
+    <div class="field-lines"></div>
 
     <!-- LOGIN SCREEN -->
     <div id="loginScreen">
         <div class="login-card">
+            <div class="login-badge">KG</div>
             <h1>KGSC Admin</h1>
             <p>Enter the admin password to view members</p>
             <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password" />
-            <button id="loginBtn">Login</button>
+            <button id="loginBtn">
+                <span id="loginBtnText">Login</span>
+                <span class="spinner" id="loginSpinner"></span>
+            </button>
             <div class="login-error" id="loginError">Incorrect password.</div>
         </div>
     </div>
@@ -372,43 +776,81 @@
     <!-- DASHBOARD -->
     <div id="dashboard">
         <div class="topbar">
-            <h1>Kamlaba Garden Sport Club — Admin</h1>
-            <button class="logout-btn" id="logoutBtn">Logout</button>
+            <div class="topbar-left">
+                <div class="icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="color:#f7f5ef">
+                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                        <path d="M16 3.13a4 4 0 010 7.75" />
+                    </svg>
+                </div>
+                <div>
+                    <h1>Kamlaba Garden Sport Club</h1>
+                    <div class="sub">Admin Dashboard</div>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <button class="btn-outline" id="exportBtn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Export CSV
+                </button>
+                <button class="btn-outline" id="logoutBtn">Logout</button>
+            </div>
         </div>
 
         <div class="content">
-            <div class="stats" id="statsRow">
+            <div class="stats">
                 <div class="stat-card">
-                    <div class="num" id="statTotal">–</div>
+                    <div class="num" id="statTotal"><span class="skel"></span></div>
                     <div class="label">Total Joined</div>
                 </div>
                 <div class="stat-card">
-                    <div class="num" id="statToday">–</div>
-                    <div class="label">Joined Today</div>
+                    <div class="num" id="statToday"><span class="skel"></span></div>
+                    <div class="label">Today</div>
                 </div>
                 <div class="stat-card">
-                    <div class="num" id="statWeek">–</div>
+                    <div class="num" id="statWeek"><span class="skel"></span></div>
                     <div class="label">Last 7 Days</div>
                 </div>
             </div>
 
             <div class="panel">
-                <h2 class="panel-title">Add member manually</h2>
-                <div class="add-form">
-                    <input type="text" id="addName" placeholder="Full name" />
-                    <input type="number" id="addAge" placeholder="Age" />
-                    <input type="text" id="addPhone" placeholder="Phone" />
-                    <input type="text" id="addAddress" placeholder="Address" />
-                    <button class="add-btn" id="addBtn">Add member</button>
+                <div class="panel-head">
+                    <h2 class="panel-title">Add member manually</h2>
+                    <button class="toggle-add-btn" id="toggleAddBtn">
+                        <span id="toggleAddText">+ Add</span>
+                    </button>
                 </div>
-                <div class="add-msg" id="addMsg"></div>
+                <div class="add-form-wrap" id="addFormWrap">
+                    <div class="add-form">
+                        <input type="text" id="addName" placeholder="Full name" />
+                        <input type="number" id="addAge" placeholder="Age" />
+                        <input type="text" id="addPhone" placeholder="Phone" />
+                        <input type="text" id="addAddress" placeholder="Address" />
+                        <button class="add-btn" id="addBtn">Add member</button>
+                    </div>
+                    <div class="toast" id="addMsg"></div>
+                </div>
             </div>
 
             <div class="panel">
-                <h2 class="panel-title">Members</h2>
+                <div class="panel-head">
+                    <h2 class="panel-title">Members <span class="count" id="memberCount"></span></h2>
+                </div>
                 <div class="search-bar">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
                     <input type="text" id="searchInput" placeholder="Search by name or phone…" />
                 </div>
+
                 <div class="table-wrap">
                     <table>
                         <thead>
@@ -423,39 +865,46 @@
                         </thead>
                         <tbody id="membersBody"></tbody>
                     </table>
-                    <div class="loading" id="loadingState" style="display:none;">Loading…</div>
-                    <div class="empty-state" id="emptyState" style="display:none;">No members yet.</div>
+                </div>
+
+                <div class="member-cards" id="memberCards"></div>
+
+                <div id="loadingState"></div>
+                <div class="empty-state" id="emptyState" style="display:none;">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                        style="display:block;margin:0 auto 10px;">
+                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                    </svg>
+                    No members yet.
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-       const API_BASE = "https://kgsc-server.onrender.com";
+        const API_BASE = "https://kgsc-server.onrender.com"; // 👈 update if your backend URL differs
 
         const loginScreen = document.getElementById("loginScreen");
         const dashboard = document.getElementById("dashboard");
         const passwordInput = document.getElementById("passwordInput");
         const loginBtn = document.getElementById("loginBtn");
+        const loginBtnText = document.getElementById("loginBtnText");
+        const loginSpinner = document.getElementById("loginSpinner");
         const loginError = document.getElementById("loginError");
         const logoutBtn = document.getElementById("logoutBtn");
 
         let allMembers = [];
 
         // ── Auth ──
-        function getStoredPassword() {
-            return sessionStorage.getItem("kgsc_admin_pw");
-        }
-
-        function setStoredPassword(pw) {
-            sessionStorage.setItem("kgsc_admin_pw", pw);
-        }
-
-        function clearStoredPassword() {
-            sessionStorage.removeItem("kgsc_admin_pw");
-        }
+        const getStoredPassword = () => sessionStorage.getItem("kgsc_admin_pw");
+        const setStoredPassword = (pw) => sessionStorage.setItem("kgsc_admin_pw", pw);
+        const clearStoredPassword = () => sessionStorage.removeItem("kgsc_admin_pw");
 
         async function login(password) {
+            loginBtn.disabled = true;
+            loginBtnText.style.opacity = "0.6";
+            loginSpinner.classList.add("show");
             try {
                 const res = await fetch(`${API_BASE}/api/admin/login`, {
                     method: "POST",
@@ -466,7 +915,13 @@
                 setStoredPassword(password);
                 showDashboard();
             } catch (err) {
+                loginError.classList.remove("show");
+                void loginError.offsetWidth;
                 loginError.classList.add("show");
+            } finally {
+                loginBtn.disabled = false;
+                loginBtnText.style.opacity = "1";
+                loginSpinner.classList.remove("show");
             }
         }
 
@@ -529,14 +984,28 @@
         }
 
         // ── Members list ──
-        async function loadMembers() {
-            const body = document.getElementById("membersBody");
+        function renderSkeleton() {
             const loadingState = document.getElementById("loadingState");
-            const emptyState = document.getElementById("emptyState");
+            let html = "";
+            for (let i = 0; i < 4; i++) {
+                html += `<div class="skeleton-row">
+          <div class="skeleton-block" style="width:30px;height:30px;border-radius:50%;"></div>
+          <div class="skeleton-block" style="width:120px;"></div>
+          <div class="skeleton-block" style="width:80px;"></div>
+          <div class="skeleton-block" style="width:100px;"></div>
+        </div>`;
+            }
+            loadingState.innerHTML = html;
+        }
 
-            loadingState.style.display = "block";
+        async function loadMembers() {
+            const emptyState = document.getElementById("emptyState");
+            const loadingState = document.getElementById("loadingState");
+
+            renderSkeleton();
             emptyState.style.display = "none";
-            body.innerHTML = "";
+            document.getElementById("membersBody").innerHTML = "";
+            document.getElementById("memberCards").innerHTML = "";
 
             try {
                 const res = await adminFetch("/api/admin/members");
@@ -546,14 +1015,23 @@
             } catch (err) {
                 console.error(err);
             } finally {
-                loadingState.style.display = "none";
+                loadingState.innerHTML = "";
             }
+        }
+
+        function initials(name) {
+            return name.trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase() || "").join("");
         }
 
         function renderMembers(members) {
             const body = document.getElementById("membersBody");
+            const cardsWrap = document.getElementById("memberCards");
             const emptyState = document.getElementById("emptyState");
+            const memberCount = document.getElementById("memberCount");
+
             body.innerHTML = "";
+            cardsWrap.innerHTML = "";
+            memberCount.textContent = members.length ? `(${members.length})` : "";
 
             if (!members.length) {
                 emptyState.style.display = "block";
@@ -562,25 +1040,41 @@
             emptyState.style.display = "none";
 
             members.forEach((m) => {
-                const tr = document.createElement("tr");
                 const joinedDate = new Date(m.joinedAt).toLocaleDateString("en-IN", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
+                    day: "2-digit", month: "short", year: "numeric",
                 });
 
+                // Desktop row
+                const tr = document.createElement("tr");
                 tr.innerHTML = `
-          <td>${escapeHtml(m.name)}</td>
-          <td>${m.age}</td>
+          <td><div class="name-cell"><div class="avatar">${initials(m.name)}</div>${escapeHtml(m.name)}</div></td>
+          <td><span class="age-pill">${m.age}</span></td>
           <td>${escapeHtml(m.phone)}</td>
           <td>${escapeHtml(m.address)}</td>
           <td>${joinedDate}</td>
           <td><button class="del-btn" data-id="${m._id}">Delete</button></td>
         `;
                 body.appendChild(tr);
+
+                // Mobile card
+                const card = document.createElement("div");
+                card.className = "member-card";
+                card.innerHTML = `
+          <div class="member-card-top">
+            <div class="name-cell"><div class="avatar">${initials(m.name)}</div><b>${escapeHtml(m.name)}</b></div>
+            <span class="age-pill">${m.age}</span>
+          </div>
+          <div class="member-card-row"><b>Phone:</b> ${escapeHtml(m.phone)}</div>
+          <div class="member-card-row"><b>Address:</b> ${escapeHtml(m.address)}</div>
+          <div class="member-card-foot">
+            <span class="joined-tag">${joinedDate}</span>
+            <button class="del-btn" data-id="${m._id}">Delete</button>
+          </div>
+        `;
+                cardsWrap.appendChild(card);
             });
 
-            body.querySelectorAll(".del-btn").forEach((btn) => {
+            document.querySelectorAll(".del-btn").forEach((btn) => {
                 btn.addEventListener("click", () => deleteMember(btn.dataset.id));
             });
         }
@@ -607,15 +1101,26 @@
             const q = e.target.value.trim().toLowerCase();
             if (!q) return renderMembers(allMembers);
             const filtered = allMembers.filter(
-                (m) =>
-                    m.name.toLowerCase().includes(q) ||
-                    m.phone.toLowerCase().includes(q)
+                (m) => m.name.toLowerCase().includes(q) || m.phone.toLowerCase().includes(q)
             );
             renderMembers(filtered);
         });
 
+        // ── Toggle add-member form ──
+        const addFormWrap = document.getElementById("addFormWrap");
+        const toggleAddBtn = document.getElementById("toggleAddBtn");
+        const toggleAddText = document.getElementById("toggleAddText");
+        let addOpen = false;
+
+        toggleAddBtn.addEventListener("click", () => {
+            addOpen = !addOpen;
+            addFormWrap.classList.toggle("open", addOpen);
+            toggleAddText.textContent = addOpen ? "− Close" : "+ Add";
+        });
+
         // ── Add member ──
-        document.getElementById("addBtn").addEventListener("click", async () => {
+        document.getElementById("addBtn").addEventListener("click", async (e) => {
+            const btn = e.target;
             const name = document.getElementById("addName").value.trim();
             const age = parseInt(document.getElementById("addAge").value, 10);
             const phone = document.getElementById("addPhone").value.trim();
@@ -624,9 +1129,12 @@
 
             if (!name || !phone || !address || isNaN(age)) {
                 msg.textContent = "Please fill in all fields.";
-                msg.className = "add-msg show err";
+                msg.className = "toast show err";
                 return;
             }
+
+            btn.disabled = true;
+            btn.textContent = "Adding…";
 
             try {
                 const res = await adminFetch("/api/admin/members", {
@@ -636,7 +1144,7 @@
                 if (!res.ok) throw new Error("Failed");
 
                 msg.textContent = "Member added!";
-                msg.className = "add-msg show ok";
+                msg.className = "toast show ok";
                 document.getElementById("addName").value = "";
                 document.getElementById("addAge").value = "";
                 document.getElementById("addPhone").value = "";
@@ -646,8 +1154,31 @@
                 loadStats();
             } catch (err) {
                 msg.textContent = "Failed to add member.";
-                msg.className = "add-msg show err";
+                msg.className = "toast show err";
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Add member";
             }
+        });
+
+        // ── Export CSV ──
+        document.getElementById("exportBtn").addEventListener("click", () => {
+            if (!allMembers.length) return;
+            const headers = ["Name", "Age", "Phone", "Address", "Joined"];
+            const rows = allMembers.map(m => [
+                m.name, m.age, m.phone, m.address,
+                new Date(m.joinedAt).toLocaleDateString("en-IN"),
+            ]);
+            const csv = [headers, ...rows]
+                .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+                .join("\n");
+            const blob = new Blob([csv], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `kgsc-members-${new Date().toISOString().slice(0, 10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
         });
 
         // ── Auto-login if password already stored this session ──
